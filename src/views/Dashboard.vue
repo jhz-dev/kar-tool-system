@@ -22,12 +22,8 @@
                 <div class="my-4">
                   <button
                     class="btn btn-primary"
-                    @click.prevent="addTool"
-                  >
-                    <!-- <button
-                    class="btn btn-primary"
                     @click.prevent="signOut"
-                  > -->
+                  >
                     Log Out
                   </button>
                 </div>
@@ -49,7 +45,7 @@
 
 <script lang="ts">
 import { useRouter } from "vue-router";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 
 import { auth } from "../config/firebaseConfig";
 import { fireStoreService } from "@/services/fireStore.service";
@@ -72,10 +68,6 @@ export default {
       return userStore.userState;
     });
 
-    /* onMounted(() => {
-      loadData();
-    }) */
-
     const signOut = async () => {
       await userStore.logOut();
       router.push("/login");
@@ -94,6 +86,7 @@ export default {
 
     const loadData = async() => {
       if (!user.value.loggedIn) {
+        router.push("/login");
         return;
       }
 
