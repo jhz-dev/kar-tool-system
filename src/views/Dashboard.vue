@@ -25,81 +25,7 @@
             </div>
           </div>
         </div>
-        <div v-if="showPanel" class="col-6">
-          <div class="container">
-            <div class="row justify-content-center">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header">Login</div>
-                  <div class="card-body">
-                    <div v-if="error" class="alert alert-danger">
-                      {{ error }}
-                    </div>
-                    <form action="#" @submit.prevent="addTool">
-                      <div class="form-group row">
-                        <label for="name" class="col-md-4 col-form-label text-md-right"
-                          >Name</label
-                        >
-
-                        <div class="col-md-6">
-                          <input
-                            id="name"
-                            v-model="name"
-                            type="name"
-                            class="form-control"
-                            name="name"
-                            value
-                            required
-                            autofocus
-                          />
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="description" class="col-md-4 col-form-label text-md-right"
-                          >Description</label
-                        >
-
-                        <div class="col-md-6">
-                          <textarea
-                            id="description"
-                            v-model="description"
-                            type="description"
-                            class="form-control"
-                            name="description"
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label for="location" class="col-md-4 col-form-label text-md-right"
-                          >Location</label
-                        >
-
-                        <div class="col-md-6">
-                          <input
-                            id="location"
-                            v-model="location"
-                            type="location"
-                            class="form-control"
-                            name="location"
-                            required
-                          />
-                        </div>
-                      </div>
-
-                      <div class="form-group row mb-0">
-                        <div class="col-md-8 offset-md-4">
-                          <button type="submit" class="btn btn-primary">Create</button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <detailPanel v-if="showPanel" @tool-created="onToolCreated"/>
       </div>
     </div>
   </div>
@@ -112,22 +38,19 @@ import { computed, onMounted, ref } from 'vue'
 import { fireStoreService } from '@/services/fireStore.service'
 import { useUserStore } from '@/stores/user'
 import navbar from '@/components/Navbar.vue'
+import detailPanel from '@/components/DetailPanel.vue'
 
 export default {
   name: 'DashboardComponent',
   components: {
-    navbar
+    navbar,
+    detailPanel
   },
   setup() {
     const userStore = useUserStore()
     const router = useRouter()
     const toolsList = ref()
     const showPanel = ref(false)
-
-    const name = ref('')
-    const description = ref('')
-    const location = ref('')
-    const error = ref(null)
 
     const user = computed(() => {
       return userStore.userState.data
@@ -136,26 +59,6 @@ export default {
     onMounted(() => {
       loadData()
     })
-
-    const addTool = async () => {
-      try {
-        await fireStoreService.addDocument('tools', {
-          name: name.value,
-          description: description.value,
-          location: location.value,
-          created: new Date().toISOString(),
-          creatorId: user.value.uid,
-        })
-        loadData();
-        showPanel.value = false;
-        name.value = '';
-        description.value = '';
-        location.value = '';
-        error.value = null;
-      } catch (err: any) {
-        error.value = err.message
-      }
-    }
 
     const showAddPanel = () => {
       showPanel.value = !showPanel.value
@@ -175,15 +78,15 @@ export default {
       }
     }
 
+    const onToolCreated = () => {
+      loadData();
+      showAddPanel();
+    }
+
     return {
-      name,
-      description,
-      location,
-      error,
       showPanel,
       toolsList,
-      addTool,
-      loadData,
+      onToolCreated,
       showAddPanel
     }
   }
@@ -193,6 +96,7 @@ export default {
 <style>
 .dashboard .container-fluid {
   padding: 15px;
+  height: calc(100vh - 58px);
 }
 
 .dashboard .dashboard__tool-list {
