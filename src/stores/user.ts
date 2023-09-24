@@ -6,8 +6,8 @@ import { auth } from '../config/firebaseConfig'
 
 
 export const useUserStore = defineStore('user', () => {
-  const userState = ref<{loggedIn: boolean, data: any}>({
-    loggedIn: false,
+  const userState = ref<{isLoggedIn: boolean, data: any}>({
+    isLoggedIn: false,
     data: {}
   });
   
@@ -40,12 +40,8 @@ export const useUserStore = defineStore('user', () => {
   };
 
   const fetchUser = async(user: User | null) => {
-    userState.value.loggedIn = user !== null;
-    if (user) {
-      userState.value.data = user;
-    } else {
-      userState.value.data = {};
-    }
+    userState.value.isLoggedIn = user !== null;
+    userState.value.data = user? user: {};
   }
 
   return { userState, register, logIn, logOut, fetchUser }

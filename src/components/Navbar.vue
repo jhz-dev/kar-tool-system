@@ -1,11 +1,6 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <router-link
-      to="/"
-      class="navbar-brand"
-    >
-      Navbar
-    </router-link>
+  <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+    <router-link to="/" class="navbar-brand"> Navbar </router-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -17,39 +12,52 @@
     >
       <span class="navbar-toggler-icon" />
     </button>
-    <div
-      id="navbarNav"
-      class="collapse navbar-collapse"
-    >
+    <div id="navbarNav" class="collapse navbar-collapse">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a
-            class="nav-link"
-            href="#"
-          >Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="#"
-          >Features</a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="#"
-          >Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled">Disabled</a>
+          <a class="nav-link" href="#">Tools <span class="sr-only">(current)</span></a>
         </li>
       </ul>
     </div>
+    <span v-if="user">Welcome, {{ user.displayName }}</span>
+    <button
+      class="btn btn-primary"
+      @click.prevent="signOut"
+    >
+      Log Out
+    </button>
   </nav>
 </template>
 
 <script lang="ts">
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { auth } from '@/config/firebaseConfig'
+import { useUserStore } from '@/stores/user'
+
 export default {
-  name: "NavBar",
-};
+  name: 'NavBar',
+
+  setup() {
+    const userStore = useUserStore()
+    const router = useRouter()
+    const toolsList = ref()
+
+    auth.onAuthStateChanged((user) => {
+      userStore.fetchUser(user);
+    })
+
+    const user = computed(() => {
+      return userStore.userState.data
+    })
+
+    const signOut = async () => {
+      await userStore.logOut()
+      router.push('/login')
+    }
+
+    return { user, toolsList, signOut }
+  }
+}
 </script>
