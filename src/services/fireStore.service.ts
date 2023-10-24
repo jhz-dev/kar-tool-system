@@ -3,7 +3,9 @@ import {
   collection,
   addDoc,
   getDocs,
-  Firestore
+  Firestore,
+  getDoc,
+  doc
 } from 'firebase/firestore/lite';
 import { app } from "../config/firebaseConfig";
 import type { FirebaseApp } from 'firebase/app';
@@ -28,6 +30,11 @@ class FireStoreService {
     return entitySnapshot.docs.map((doc) => {
       return { id: doc.id, ...doc.data()}
     });
+  }
+  
+  async getDocument(collection: string, document: string) {
+    const docRef = doc(this.db, collection, document);
+    return getDoc(docRef);
   }
 }
 

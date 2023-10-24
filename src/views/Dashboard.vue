@@ -4,14 +4,12 @@
     <div class="container-fluid">
       <div class="row justify-content-left">
         <div class="dashboard__tool-list" :class="{ 'col-12': !showPanel, 'col-6': showPanel }">
-          <button class="btn btn-primary" @click.prevent="showAddPanel">Crear herramienta</button>
+          <button class="btn btn-primary" @click="showAddPanel()">Crear herramienta</button>
           <table class="table">
             <thead class="thead-light">
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Descripción</th>
-                <th scope="col">Número de serie</th>
-                <th scope="col">Ubicación/Código de barras</th>
                 <th scope="col">Acciones</th>
               </tr>
             </thead>
@@ -19,10 +17,8 @@
               <tr v-for="(tool, index) in toolsList" :key="index">
                 <th scope="row">{{ index + 1 }}</th>
                 <td>{{ tool.description }}</td>
-                <td>{{ tool.serialNumber }}</td>
-                <td>{{ tool.barcode }}</td>
                 <td>
-                  <button class="btn btn-primary">Ver</button>
+                  <button class="btn btn-primary" @click="showAddPanel(tool.id)">Ver</button>
                   <button class="btn btn-danger">Eliminar</button>
                 </td>
               </tr>
@@ -31,8 +27,9 @@
         </div>
         <detailPanel
           v-if="showPanel"
+          :tool-id="toolId"
           @tool-created="onToolCreated"
-          @close-panel="showAddPanel"
+          @close-panel="closePanel"
         />
       </div>
     </div>
@@ -59,6 +56,7 @@ export default {
     const router = useRouter()
     const toolsList = ref()
     const showPanel = ref(false)
+    const toolId = ref('')
 
     const user = computed(() => {
       return userStore.userState.data
@@ -68,8 +66,14 @@ export default {
       loadData()
     })
 
-    const showAddPanel = () => {
-      showPanel.value = !showPanel.value
+    const showAddPanel = (tool = '') => {
+      toolId.value = tool;
+      showPanel.value = true
+    }
+
+    const closePanel = () => {
+      toolId.value = '';
+      showPanel.value = false
     }
 
     const loadData = async () => {
@@ -95,7 +99,9 @@ export default {
       showPanel,
       toolsList,
       onToolCreated,
-      showAddPanel
+      showAddPanel,
+      toolId,
+      closePanel
     }
   }
 }
@@ -111,7 +117,11 @@ export default {
   overflow-y: scroll;
 }
 
-.dashboard .dashboard__tool-list .dashboard__tool {
+.dashboard .dashboard__tool-list .table {
   margin-top: 15px;
+}
+
+.dashboard .dashboard__tool-list .btn {
+  margin-right: 10px;
 }
 </style>
