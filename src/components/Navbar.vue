@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-    <router-link to="/" class="navbar-brand"> Navbar </router-link>
+    <router-link to="/" class="navbar-brand"> La Muela </router-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -15,16 +15,16 @@
     <div id="navbarNav" class="collapse navbar-collapse">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="#">Tools <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="#">Herramientas <span class="sr-only">(current)</span></a>
         </li>
       </ul>
     </div>
-    <span v-if="user">Welcome, {{ user.displayName }}</span>
+    <span v-if="user">Bienvenid@, {{ user.displayName }}</span>
     <button
       class="btn btn-primary"
       @click.prevent="signOut"
     >
-      Log Out
+      Cerrar sesión
     </button>
   </nav>
 </template>

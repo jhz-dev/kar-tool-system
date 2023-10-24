@@ -4,28 +4,36 @@
     <div class="container-fluid">
       <div class="row justify-content-left">
         <div class="dashboard__tool-list" :class="{ 'col-12': !showPanel, 'col-6': showPanel }">
-          <button class="btn btn-primary" @click.prevent="showAddPanel">Create tool</button>
-          <div
-            class="card bg-light dashboard__tool"
-            v-for="(tool, index) in toolsList"
-            :key="index"
-          >
-            <div class="card-body">
-              <h5 class="card-title">{{ tool.name }}</h5>
-              <p class="card-text">
-                {{ tool.description }}
-              </p>
-              <span class="badge badge-secondary">
-                Location: {{ tool.location }}
-              </span>
-            </div>
-            <div class="card-footer">
-              <a href="#" class="card-link">Card link</a>
-              <a href="#" class="card-link">Another link</a>
-            </div>
-          </div>
+          <button class="btn btn-primary" @click.prevent="showAddPanel">Crear herramienta</button>
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Número de serie</th>
+                <th scope="col">Ubicación/Código de barras</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(tool, index) in toolsList" :key="index">
+                <th scope="row">{{ index + 1 }}</th>
+                <td>{{ tool.description }}</td>
+                <td>{{ tool.serialNumber }}</td>
+                <td>{{ tool.barcode }}</td>
+                <td>
+                  <button class="btn btn-primary">Ver</button>
+                  <button class="btn btn-danger">Eliminar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <detailPanel v-if="showPanel" @tool-created="onToolCreated"/>
+        <detailPanel
+          v-if="showPanel"
+          @tool-created="onToolCreated"
+          @close-panel="showAddPanel"
+        />
       </div>
     </div>
   </div>
@@ -79,8 +87,8 @@ export default {
     }
 
     const onToolCreated = () => {
-      loadData();
-      showAddPanel();
+      loadData()
+      showAddPanel()
     }
 
     return {

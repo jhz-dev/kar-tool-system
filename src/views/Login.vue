@@ -4,7 +4,7 @@
       <div class="col-md-8">
         <div class="card">
           <div class="card-header">
-            Login
+            Iniciar sesión
           </div>
           <div class="card-body">
             <div
@@ -21,7 +21,7 @@
                 <label
                   for="email"
                   class="col-md-4 col-form-label text-md-right"
-                >Email</label>
+                >Correo eléctronico</label>
 
                 <div class="col-md-6">
                   <input
@@ -41,7 +41,7 @@
                 <label
                   for="password"
                   class="col-md-4 col-form-label text-md-right"
-                >Password</label>
+                >Contraseña</label>
 
                 <div class="col-md-6">
                   <input
@@ -61,7 +61,7 @@
                     type="submit"
                     class="btn btn-primary"
                   >
-                    Login
+                    Ingresar
                   </button>
                 </div>
               </div>
