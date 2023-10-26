@@ -8,7 +8,7 @@
             <div v-if="error" class="alert alert-danger">
               {{ error }}
             </div>
-            <form action="#" @submit.prevent="addTool">
+            <form action="#" @submit.prevent="onSubmit">
               <div class="form-group row">
                 <label for="description" class="col-md-4 col-form-label text-md-right"
                   >Descripción</label
@@ -60,9 +60,15 @@
 
               <div class="form-group row mb-0">
                 <div class="col-md-8 offset-md-2">
-                  <button type="submit" class="btn btn-primary">Crear</button>
+                  <button type="submit"
+                    v-if="!toolId"
+                    class="btn btn-primary"
+                  >Crear</button>
+                  <button type="submit"
+                    v-else
+                    class="btn btn-primary"
+                  >Actualizar</button>
                   <button class="btn btn-danger" @click="closePanel">Cerrar</button>
-                  <span>{{ toolId }}</span>
                 </div>
               </div>
             </form>
@@ -81,7 +87,7 @@ import { fireStoreService } from '@/services/fireStore.service'
 
 export default {
   name: 'DetailPanel',
-  emits: ['tool-created', 'close-panel'],
+  emits: ['tool-created', 'close-panel', 'tool-updated'],
   props: ['toolId'],
   setup(props, { emit }) {
     const userStore = useUserStore()
@@ -111,6 +117,13 @@ export default {
       }
     })
 
+    const clearForm = () => {
+      barcode.value = ''
+      description.value = ''
+      serialNumber.value = ''
+      error.value = null
+    }
+
     const addTool = async () => {
       const user = userStore.userState.data
       try {
@@ -122,14 +135,37 @@ export default {
           creatorId: user.uid
         })
 
-        barcode.value = ''
-        description.value = ''
-        serialNumber.value = ''
-        error.value = null
-
+        clearForm();
         emit('tool-created')
       } catch (err: any) {
         error.value = err.message
+      }
+    }
+
+    const updateTool = async (toolId: string) => {
+      try {
+        await fireStoreService.updateDocument(
+          'tools',
+          toolId,
+          {
+            barcode: barcode.value,
+            description: description.value,
+            serialNumber: serialNumber.value,
+          }
+        )
+
+        clearForm();
+        emit('tool-updated')
+      } catch (err: any) {
+        error.value = err.message
+      }
+    }
+
+    const onSubmit = () => {
+      if (!toolId.value) {
+        addTool();
+      } else {
+        updateTool(toolId.value);
       }
     }
 
@@ -138,12 +174,13 @@ export default {
     }
 
     return {
-      description,
-      barcode,
-      serialNumber,
-      error,
       addTool,
-      closePanel
+      barcode,
+      closePanel,
+      description,
+      error,
+      onSubmit,
+      serialNumber
     }
   }
 }

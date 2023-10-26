@@ -5,7 +5,8 @@ import {
   getDocs,
   Firestore,
   getDoc,
-  doc
+  doc,
+  updateDoc
 } from 'firebase/firestore/lite';
 import { app } from "../config/firebaseConfig";
 import type { FirebaseApp } from 'firebase/app';
@@ -35,6 +36,11 @@ class FireStoreService {
   async getDocument(collection: string, document: string) {
     const docRef = doc(this.db, collection, document);
     return getDoc(docRef);
+  }
+  
+  async updateDocument(collection: string, document: string, row: WithFieldValue<DocumentData>) {
+    const docRef = doc(this.db, collection, document);
+    return updateDoc(docRef, row);
   }
 }
 

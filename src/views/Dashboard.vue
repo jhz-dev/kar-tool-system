@@ -29,6 +29,7 @@
           v-if="showPanel"
           :tool-id="toolId"
           @tool-created="onToolCreated"
+          @tool-updated="onToolCreated"
           @close-panel="closePanel"
         />
       </div>
@@ -92,7 +93,7 @@ export default {
 
     const onToolCreated = () => {
       loadData()
-      showAddPanel()
+      closePanel()
     }
 
     return {
