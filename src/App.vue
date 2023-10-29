@@ -1,8 +1,6 @@
 <template>
-  <div style="height: 100vh; width: 100vw;">
-    <main>
-      <router-view />
-    </main>
+  <div class="bg-warning" style="height: 100vh; width: 100vw;">
+    <router-view />
   </div>
 </template>
 

@@ -1,6 +1,8 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-    <router-link to="/" class="navbar-brand"> La Muela </router-link>
+    <router-link to="/" class="navbar-brand">
+      <img src="@/assets/la_muela.jpeg" class="img-fluid" alt="Logo">
+    </router-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -61,3 +63,18 @@ export default {
   }
 }
 </script>
+
+<style>
+.navbar {
+  position: relative;
+}
+.navbar span {
+  margin-right: 10px;
+}
+.navbar-brand {
+  padding: 0;
+}
+.img-fluid {
+  height: 40px;
+}
+</style>

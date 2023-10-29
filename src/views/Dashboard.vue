@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard">
+  <div class="dashboard bg-light">
     <navbar />
     <div class="container-fluid">
       <div class="row justify-content-left">
@@ -122,9 +122,7 @@ export default {
 .dashboard .container-fluid {
   padding: 15px;
   height: calc(100vh - 58px);
-}
-
-.dashboard .dashboard__tool-list {
+  background-color: rgba(255,193,7, 0.2)!important;
   overflow-y: scroll;
 }
 
