@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-warning" style="height: 100vh; width: 100vw;">
+  <div class="bg-light" style="height: 100vh; width: 100vw;">
     <router-view />
   </div>
 </template>
