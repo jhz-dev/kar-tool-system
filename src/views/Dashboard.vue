@@ -25,13 +25,22 @@
             </tbody>
           </table>
         </div>
-        <detailPanel
-          v-if="showPanel"
-          :tool-id="toolId"
-          @tool-created="onToolCreated"
-          @tool-updated="onToolCreated"
-          @close-panel="closePanel"
-        />
+        <detailPanel v-if="showPanel" :tool-id="toolId" @tool-created="onToolCreated" @tool-updated="onToolCreated"
+          @close-panel="closePanel" />
+      </div>
+    </div>
+    <div
+      v-for="(toast, index) in toastMessages" :key="index"
+      class="toast toast-message" role="alert" aria-live="assertive" aria-atomic="true"
+    >
+      <div
+        class="toast-body"
+        :class="[{
+          'bg-error': toast.type === 'error',
+          'bg-success': toast.type === 'success'
+        }]"
+      >
+        {{ toast.message }}
       </div>
     </div>
   </div>
@@ -39,7 +48,7 @@
 
 <script lang="ts">
 import { useRouter } from 'vue-router'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 import { fireStoreService } from '@/services/fireStore.service'
 import { useUserStore } from '@/stores/user'
@@ -58,10 +67,23 @@ export default {
     const toolsList = ref()
     const showPanel = ref(false)
     const toolId = ref('')
+    const toastMessages = ref([] as { message: String, type: String }[])
 
     const user = computed(() => {
       return userStore.userState.data
     })
+
+    watch(
+      toastMessages.value,
+      () => {
+        console.log("qwerty");
+        if(toastMessages.value.length > 0) {
+          setTimeout(() => {
+            toastMessages.value.shift();
+          }, 2000)
+        }
+      }
+    )
 
     onMounted(() => {
       loadData()
@@ -87,21 +109,36 @@ export default {
         const tools = await fireStoreService.getDocuments('tools')
         toolsList.value = tools
       } catch (error) {
-        console.error(error)
+        toastMessages.value.push({
+          message:"No fue posible terminar la operación",
+          type: "error"
+        });
       }
     }
 
     const onToolCreated = () => {
       loadData()
       closePanel()
+      toastMessages.value.push({
+        message:"La operación fue un éxito",
+        type: "success"
+      });
     }
 
     const deleteTool = async (id: string) => {
       try {
         await fireStoreService.deleteDocument('tools', id)
+        toastMessages.value.push({
+          message:"La herramienta fue borrada con éxito",
+          type: "success"
+        });
         loadData();
+        closePanel()
       } catch (error) {
-        console.error(error);
+        toastMessages.value.push({
+          message:"No fue posible terminar la operación",
+          type: "error"
+        });
       }
     }
 
@@ -113,16 +150,21 @@ export default {
       showPanel,
       toolId,
       toolsList,
+      toastMessages
     }
   }
 }
 </script>
 
 <style>
+.dashboard {
+  position: relative;
+}
+
 .dashboard .container-fluid {
   padding: 15px;
   height: calc(100vh - 58px);
-  background-color: rgba(255,193,7, 0.2)!important;
+  background-color: rgba(255, 193, 7, 0.2) !important;
   overflow-y: scroll;
 }
 
@@ -132,5 +174,21 @@ export default {
 
 .dashboard .dashboard__tool-list .btn {
   margin-right: 10px;
+}
+
+.dashboard .toast-message {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  opacity: 1;
+  z-index: 1000;
+}
+
+.dashboard .bg-error {
+  background-color: rgba(220,53,69, 0.5)
+}
+
+.dashboard .bg-success {
+  background-color: rgba(53, 220, 109, 0.5)
 }
 </style>
