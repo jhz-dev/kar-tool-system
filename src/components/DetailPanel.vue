@@ -91,23 +91,23 @@ export default {
   props: ['toolId'],
   setup(props, { emit }) {
     const userStore = useUserStore()
-    const toolId = ref(props.toolId);
     const description = ref('')
     const barcode = ref('')
     const serialNumber = ref('')
     const error = ref(null)
 
     watch(
-      () => toolId,
-      () => {
-        console.log({toolId});
-        
-      }
+      () => props.toolId,
+      () => loadToolDetails()
     )
 
     onMounted(() => {
-      if (toolId.value) {
-        fireStoreService.getDocument('tools', toolId.value)
+      loadToolDetails();
+    })
+
+    const loadToolDetails = () => {
+      if (props.toolId) {
+        fireStoreService.getDocument('tools', props.toolId)
         .then((snapshot) => {
           const tool = snapshot.data()
           description.value = tool?.description
@@ -115,7 +115,7 @@ export default {
           serialNumber.value = tool?.serialNumber
         });
       }
-    })
+    }
 
     const clearForm = () => {
       barcode.value = ''
@@ -162,10 +162,10 @@ export default {
     }
 
     const onSubmit = () => {
-      if (!toolId.value) {
+      if (!props.toolId) {
         addTool();
       } else {
-        updateTool(toolId.value);
+        updateTool(props.toolId);
       }
     }
 

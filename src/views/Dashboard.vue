@@ -19,7 +19,7 @@
                 <td>{{ tool.description }}</td>
                 <td>
                   <button class="btn btn-primary" @click="showAddPanel(tool.id)">Ver</button>
-                  <button class="btn btn-danger">Eliminar</button>
+                  <button class="btn btn-danger" @click="deleteTool(tool.id)">Eliminar</button>
                 </td>
               </tr>
             </tbody>
@@ -96,13 +96,23 @@ export default {
       closePanel()
     }
 
+    const deleteTool = async (id: string) => {
+      try {
+        await fireStoreService.deleteDocument('tools', id)
+        loadData();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     return {
-      showPanel,
-      toolsList,
+      closePanel,
+      deleteTool,
       onToolCreated,
       showAddPanel,
+      showPanel,
       toolId,
-      closePanel
+      toolsList,
     }
   }
 }
